@@ -53,7 +53,7 @@ android {
         sourceSets.named(flavor.name) {
             //java.srcDir("src/$flavorName/kotlin", getOtherPath(flavorName, appName, "java")) 这里也可以加other
             java.srcDir("src/$flavorName/java")
-            res.srcDir("res/$flavorName/res")
+            res.srcDir("src/$flavorName/res")
             jniLibs.srcDirs("src/$flavorName/libs")
             assets.srcDir("src/$flavorName/assets")
             manifest.srcFile("src/$flavorName/AndroidManifest.xml")
