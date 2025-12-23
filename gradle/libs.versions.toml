@@ -14,6 +14,13 @@ constraintlayout = "2.2.1"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
 activity = "1.12.1"
+#编译环境
+compileSdk = "36"
+minSdk = "24"
+jvmTarget = "11"
+targetSdk = "35"
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
