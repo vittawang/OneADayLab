@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "odl"
 include(":app")
- 
+include(":respack")
+include(":libext")
+include(":collect")
