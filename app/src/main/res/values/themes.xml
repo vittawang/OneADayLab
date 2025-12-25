@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Odl" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Odl" parent="Theme.Material3.Light.NoActionBar" />
+<!--    <style name="Theme.Odl" parent="Theme.MaterialComponents.Light.NoActionBar" />-->
+<!--    <style name="Theme.Odl" parent="Theme.Material3.DynamicColors.Dark.NoActionBar" />-->
+
 </resources>
