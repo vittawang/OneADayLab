@@ -60,6 +60,9 @@ android {
         }
         flavor.consumerProguardFiles("src/$flavorName/consumer-rules.pro")
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -70,6 +73,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    api(project(":libext"))
+    api(project(":respack"))
 }
 
 fun renameFlavorList(list: List<String>): List<String> {

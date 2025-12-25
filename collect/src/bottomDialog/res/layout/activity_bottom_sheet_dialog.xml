@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".bottom.BSheetDialogActivity">
+
+    <Button
+        android:id="@+id/btn_fixHeight480"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="XML内部写死高度480"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_fixHei2"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:text="固定高度2:代码控制XML根标签LayoutParams"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_fixHeight480" />
+
+    <Button
+        android:id="@+id/btn_wrapHeight"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:text="自适应内容的高度（ScrollView+TextView）"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_fixHei2" />
+
+    <Button
+        android:id="@+id/btn_w1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="字数少"
+        app:layout_constraintStart_toStartOf="@id/btn_wrapHeight"
+        app:layout_constraintTop_toBottomOf="@+id/btn_wrapHeight" />
+
+    <Button
+        android:id="@+id/btn_w2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="字数多"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/btn_w1"
+        app:layout_constraintTop_toBottomOf="@+id/btn_wrapHeight" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
