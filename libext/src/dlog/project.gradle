@@ -1,0 +1,11 @@
+dependencies {
+    implementation files('src/dlog/libs/log4j-1.2.17.jar')
+    implementation files('src/dlog/libs/logan.aar')
+}
+
+android {
+    defaultConfig{
+        // log 秘钥
+        buildConfigField "String", "LOG_KEY", '"c98be"'
+    }
+}
