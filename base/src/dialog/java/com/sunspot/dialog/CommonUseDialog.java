@@ -88,17 +88,17 @@ public class CommonUseDialog extends Dialog implements LifecycleEventObserver {
     /**
      * 弹窗背景资源
      */
-    public static int BG_RES = R.drawable.cu_bg;
+    public static int BG_RES = R.drawable.cu_dialog_bg;
 
     /**
      * 确认按钮背景资源
      */
-    public static int CONFIRM_BG_RES = R.drawable.cu_confirm_btn_selector;
+    public static int CONFIRM_BG_RES = R.drawable.cu_confirm_btn_bg_selector;
 
     /**
      * 取消按钮背景资源
      */
-    public static int CANCEL_BG_RES = R.drawable.cu_cancel_btn_selector;
+    public static int CANCEL_BG_RES = R.drawable.cu_cancel_btn_bg_selector;
 
     /**
      * 取消按钮字体颜色资源

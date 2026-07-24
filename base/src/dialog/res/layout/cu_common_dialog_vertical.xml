@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:background="@drawable/cu_bg">
+    android:background="@drawable/cu_dialog_bg">
 
     <TextView
         android:id="@+id/tv_dialog_title"
@@ -57,7 +57,7 @@
             android:layout_height="44dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:background="@drawable/cu_cancel_btn_selector"
+            android:background="@drawable/cu_cancel_btn_bg_selector"
             android:gravity="center"
             android:text="@string/cu_common_cancel"
             android:textColor="@color/cu_text_color" />
@@ -73,7 +73,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginRight="12dp"
-            android:background="@drawable/cu_confirm_btn_selector"
+            android:background="@drawable/cu_confirm_btn_bg_selector"
             android:gravity="center"
             android:text="@string/cu_common_confirm"
             android:textColor="@color/cu_confirm_text_color" />
@@ -84,7 +84,7 @@
         android:layout_width="39dp"
         android:layout_height="49dp"
         android:layout_alignParentRight="true"
-        android:src="@mipmap/cu_dialog_card_close"
+        android:src="@drawable/cu_dialog_card_close"
         android:visibility="gone" />
 
 </RelativeLayout>

@@ -2,9 +2,9 @@
 <resources>
     <color name="cu_text_color">#2B2727</color>
     <color name="cu_confirm_text_color">#FFFFFF</color>
-    <color name="cu_confirm_n">#FF8383</color>
-    <color name="cu_confirm_p">#CC6868</color>
-    <color name="cu_confirm_un_enable">#66FF8383</color>
-    <color name="cu_cancel_p">#C1C1C2</color>
-    <color name="cu_cancel_n">#F2F2F3</color>
+    <color name="cu_confirm_normal">#FF8383</color>
+    <color name="cu_confirm_pressed">#CC6868</color>
+    <color name="cu_confirm_disabled">#66FF8383</color>
+    <color name="cu_cancel_pressed">#C1C1C2</color>
+    <color name="cu_cancel_normal">#F2F2F3</color>
 </resources>
