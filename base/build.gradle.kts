@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-extra["pinsConfigList"] = emptyList<String>()
+extra["pinsConfigList"] = listOf("page","dialog")
 apply(from = rootProject.file("gradle/pins.gradle"))
 
 android {
@@ -33,4 +33,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    implementation(project(":libext"))
 }
