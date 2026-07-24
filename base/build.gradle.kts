@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-extra["pinsConfigList"] = listOf("page","dialog")
+extra["pinsConfigList"] = listOf("page","cu_dialog")
 apply(from = rootProject.file("gradle/pins.gradle"))
 
 android {
