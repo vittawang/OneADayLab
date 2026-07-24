@@ -61,6 +61,11 @@ android {
                 manifest.srcFile(pinManifest)
             }
         }
+        def pinsGradlePath = "$projectDir/src/${sourceName}/project.gradle"
+        def file = new File(pinsGradlePath)
+        if (file.exists()) {
+            apply from: pinsGradlePath
+        }
     }
 
     buildFeatures {

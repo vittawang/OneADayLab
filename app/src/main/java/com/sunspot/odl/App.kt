@@ -2,6 +2,9 @@ package com.sunspot.odl
 
 import android.app.Application
 import com.sunspot.libext.AppContext
+import com.sunspot.libext.BuildConfig
+import com.sunspot.log.DLog
+import com.sunspot.log.config.DLogConfig
 
 /**
  * -------------------------------------
@@ -14,11 +17,13 @@ import com.sunspot.libext.AppContext
  * 备注：
  * -------------------------------------
  */
-class App: Application() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
         AppContext.instance.initContext(this)
+        DLogConfig.getInstance().setMainBroadcast(true)
+        DLog.config(BuildConfig.DEBUG)
     }
 
 }

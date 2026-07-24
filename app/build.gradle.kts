@@ -24,7 +24,20 @@ android {
 
     buildTypes {
         release {
+            //混淆
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
+            buildConfigField("boolean", "DEBUG", "false")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
             isMinifyEnabled = false
+            isDebuggable = true
+            buildConfigField("boolean", "DEBUG", "true")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -36,10 +49,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get().toString()
+        jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

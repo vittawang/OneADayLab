@@ -46,4 +46,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     api(project(":libext"))
     api(project(":respack"))
+    api(project(":base"))
 }
