@@ -1,0 +1,69 @@
+/*
+ * 所有 Android 模块共用的 pins 分包配置。
+ *
+ * 每个模块必须在 apply 之前声明自己的分包：
+ *   extra["pinsConfigList"] = listOf("foo", "bar")
+ */
+
+if (!project.extensions.extraProperties.has("pinsConfigList")) {
+    throw new GradleException(
+            "${project.path} 必须在应用 pins.gradle 前声明 pinsConfigList"
+    )
+}
+
+def configList = project.extensions.extraProperties.get("pinsConfigList")
+if (!(configList instanceof Collection)) {
+    throw new GradleException(
+            "${project.path} 的 pinsConfigList 必须是一个 List"
+    )
+}
+
+def generateName = { int index ->
+    if (index < 0) {
+        throw new GradleException("pin 索引不能小于 0")
+    }
+
+    def alphabetLength = 26
+    if (index < alphabetLength) {
+        return Character.toString((char) ('a' as char) + index)
+    }
+
+    def firstChar = (char) (('a' as char) + (index.intdiv(alphabetLength) - 1))
+    def secondChar = (char) (('a' as char) + (index % alphabetLength))
+    return "${firstChar}${secondChar}"
+}
+
+def renamedFlavorList = (0..<configList.size()).collect { generateName(it) }
+def isLibraryModule = pluginManager.hasPlugin("com.android.library")
+
+android {
+    flavorDimensions.addAll(renamedFlavorList)
+
+    renamedFlavorList.eachWithIndex { flavorName, index ->
+        def sourceName = configList[index]
+        def consumerRules = file("src/${sourceName}/consumer-rules.pro")
+
+        productFlavors.create(flavorName) {
+            dimension = flavorName
+            if (isLibraryModule && consumerRules.exists()) {
+                consumerProguardFiles(consumerRules)
+            }
+        }
+
+        sourceSets.named(flavorName) {
+            java.srcDir("src/${sourceName}/java")
+            res.srcDir("src/${sourceName}/res")
+            jniLibs.srcDir("src/${sourceName}/libs")
+            assets.srcDir("src/${sourceName}/assets")
+
+            def pinManifest = file("src/${sourceName}/AndroidManifest.xml")
+            if (pinManifest.exists()) {
+                manifest.srcFile(pinManifest)
+            }
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+}

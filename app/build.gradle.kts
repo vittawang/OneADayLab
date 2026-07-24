@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+extra["pinsConfigList"] = emptyList<String>()
+apply(from = rootProject.file("gradle/pins.gradle"))
+
 android {
     namespace = "com.sunspot.odl"
     compileSdk = libs.versions.compileSdk.get().toInt()

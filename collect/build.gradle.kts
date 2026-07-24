@@ -1,9 +1,10 @@
-import com.android.build.api.dsl.ProductFlavor
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
+
+extra["pinsConfigList"] = listOf("bottomDialog", "coroutine")
+apply(from = rootProject.file("gradle/pins.gradle"))
 
 android {
     namespace = "com.sunspot.collect"
@@ -33,36 +34,6 @@ android {
         jvmTarget = libs.versions.jvmTarget.get().toString()
     }
 
-    val configList = listOf("bottomDialog", "hhh")
-    val renamedFlavorList = renameFlavorList(configList)
-    //定义多个变种（flavor：buildType）(flavor:bottom)
-    setFlavorDimensions(renamedFlavorList)
-    //为每个变种创建一种维度（可以创建多种维度 这个pins的场景创建一种维度即可，因为要组合多个flavor，维度不可组合只能选一）（dimension：debug、release、publish）
-    renamedFlavorList.forEach {
-        android.productFlavors.create(it, object : Action<ProductFlavor> {
-            override fun execute(t: ProductFlavor) {
-                //(dimension:也叫bottom) 这里纯好记了
-                t.dimension = it
-            }
-        })
-    }
-    //声明每个维度的具体文件夹路径配置,并组合各个维度变种形成apk
-    productFlavors.forEachIndexed { index, flavor ->
-        val flavorName = configList[index]
-        //sourceSet要以abc命令，具体的文件夹路径用明文
-        sourceSets.named(flavor.name) {
-            //java.srcDir("src/$flavorName/kotlin", getOtherPath(flavorName, appName, "java")) 这里也可以加other
-            java.srcDir("src/$flavorName/java")
-            res.srcDir("src/$flavorName/res")
-            jniLibs.srcDirs("src/$flavorName/libs")
-            assets.srcDir("src/$flavorName/assets")
-            manifest.srcFile("src/$flavorName/AndroidManifest.xml")
-        }
-        flavor.consumerProguardFiles("src/$flavorName/consumer-rules.pro")
-    }
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
@@ -75,30 +46,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     api(project(":libext"))
     api(project(":respack"))
-}
-
-fun renameFlavorList(list: List<String>): List<String> {
-    return list.mapIndexed { index, _ ->
-        generateName(index)
-    }
-}
-
-/**
- * 重命名flavorName 名字是个字符串不能太长
- */
-fun generateName(index: Int): String {
-    // ASCII码中，'a'的值为97
-    val baseChar = 'a'
-    val alphabetLength = 26
-
-    // 计算当前索引对应的字母组合
-    if (index < alphabetLength) {
-        // 单字母命名 abcd.....
-        return "${(baseChar + index).toChar()}"
-    } else {
-        // 双字母命名 AaAbAc....
-        val firstCharIndex = (index / alphabetLength) - 1
-        val secondCharIndex = index % alphabetLength
-        return "${(baseChar + firstCharIndex).toChar()}${(baseChar + secondCharIndex).toChar()}"
-    }
 }
