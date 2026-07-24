@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-extra["pinsConfigList"] = emptyList<String>()
+extra["pinsConfigList"] = listOf("dlog")
 apply(from = rootProject.file("gradle/pins.gradle"))
 
 android {
