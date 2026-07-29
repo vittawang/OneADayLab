@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/base_loading_ll_root"
     android:layout_width="240dp"
     android:layout_height="wrap_content"
@@ -10,13 +11,23 @@
     android:paddingHorizontal="24dp"
     android:paddingVertical="30dp">
 
-    <ProgressBar
+    <!--    <ProgressBar-->
+    <!--        android:id="@+id/base_loading_progress"-->
+    <!--        android:layout_width="50dp"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        android:contentDescription="@string/base_loading_progress_description"-->
+    <!--        android:indeterminate="true"-->
+    <!--        android:indeterminateTint="@color/base_loading_primary" />-->
+
+
+    <com.sunspot.progress.widget.RotatingCircularProgressIndicator
         android:id="@+id/base_loading_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:contentDescription="@string/base_loading_progress_description"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/base_loading_primary" />
+        app:progressRotatingGapSize="0dp"
+        app:progressRotatingIndicatorColor="@color/base_loading_primary"
+        app:progressRotatingTrackColor="@color/base_loading_secondary"
+        app:progressRotatingValue="30" />
 
     <TextView
         android:id="@+id/base_loading_tv_message"

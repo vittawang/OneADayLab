@@ -3,6 +3,7 @@ package com.sunspot.progress.widget
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -15,7 +16,7 @@ import androidx.core.view.isVisible
  *
  * View 自己管理动画生命周期，添加到窗口后可自动开始，移除时自动释放 Animator。
  */
-class RotatingCircularProgressIndicator @JvmOverloads constructor(
+public class RotatingCircularProgressIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = com.google.android.material.R.attr.circularProgressIndicatorStyle
@@ -156,7 +157,7 @@ class RotatingCircularProgressIndicator @JvmOverloads constructor(
 
     private companion object {
         const val DEFAULT_PROGRESS = 25
-        const val DEFAULT_ROTATION_DURATION = 1_000L
+        const val DEFAULT_ROTATION_DURATION = 900L
         const val MIN_ROTATION_DURATION = 1
         const val DIRECTION_CLOCKWISE = 0
         const val DIRECTION_COUNTERCLOCKWISE = 1

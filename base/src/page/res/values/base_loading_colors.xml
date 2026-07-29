@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="base_loading_primary">#2F6B4F</color>
+    <color name="base_loading_secondary">#FFE3F1E9</color>
     <color name="base_loading_surface">#FFFFFF</color>
     <color name="base_loading_text">#15231B</color>
 </resources>
