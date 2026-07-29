@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="progress_activity_title">官方 ProgressBar 样式</string>
+    <string name="progress_circular_section_title">圆形样式</string>
+    <string name="progress_inverse_section_title">反色圆形样式</string>
+    <string name="progress_horizontal_section_title">水平样式与用法</string>
+
+    <string name="progress_style_default">progressBarStyle\n默认尺寸的不确定进度</string>
+    <string name="progress_style_small">progressBarStyleSmall\n小尺寸的不确定进度</string>
+    <string name="progress_style_small_title">progressBarStyleSmallTitle\n适合标题区域的小尺寸进度</string>
+    <string name="progress_style_large">progressBarStyleLarge\n大尺寸的不确定进度</string>
+    <string name="progress_style_inverse">progressBarStyleInverse\n默认尺寸的反色进度</string>
+    <string name="progress_style_small_inverse">progressBarStyleSmallInverse\n小尺寸的反色进度</string>
+    <string name="progress_style_large_inverse">progressBarStyleLargeInverse\n大尺寸的反色进度</string>
+
+    <string name="progress_horizontal_determinate">progressBarStyleHorizontal\n确定进度：60%%</string>
+    <string name="progress_horizontal_secondary">progressBarStyleHorizontal\n主进度：40%%，二级进度：75%%</string>
+    <string name="progress_horizontal_indeterminate">progressBarStyleHorizontal\n不确定进度：indeterminate=true</string>
+</resources>
