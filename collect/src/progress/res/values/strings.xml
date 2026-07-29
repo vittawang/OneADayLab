@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="progress_activity_title">官方 ProgressBar 样式</string>
+    <string name="progress_activity_title">进度条样式</string>
+    <string name="progress_tab_framework">官方 ProgressBar</string>
+    <string name="progress_tab_circular">CircularIndicator</string>
+    <string name="progress_tab_rotating">固定圆弧动画</string>
     <string name="progress_circular_section_title">圆形样式</string>
     <string name="progress_inverse_section_title">反色圆形样式</string>
     <string name="progress_horizontal_section_title">水平样式与用法</string>
@@ -16,4 +19,27 @@
     <string name="progress_horizontal_determinate">progressBarStyleHorizontal\n确定进度：60%%</string>
     <string name="progress_horizontal_secondary">progressBarStyleHorizontal\n主进度：40%%，二级进度：75%%</string>
     <string name="progress_horizontal_indeterminate">progressBarStyleHorizontal\n不确定进度：indeterminate=true</string>
+
+    <string name="progress_circular_indicator_title">CircularProgressIndicator</string>
+    <string name="progress_circular_indicator_description">Material 圆形进度条支持确定进度、不确定动画、方向、尺寸、粗细、端点和颜色配置。</string>
+    <string name="progress_circular_determinate">确定进度：25%%，逆时针</string>
+    <string name="progress_circular_animate">在 25%% 和 75%% 之间动画切换</string>
+    <string name="progress_circular_direction">进度方向</string>
+    <string name="progress_circular_clockwise">顺时针 65%%</string>
+    <string name="progress_circular_counterclockwise">逆时针 65%%</string>
+    <string name="progress_circular_size_thickness">尺寸与圆环粗细</string>
+    <string name="progress_circular_corners">直角端点与圆角端点</string>
+    <string name="progress_circular_gap_title">Indicator 与 Track 的间隙</string>
+    <string name="progress_circular_gap_description">indicatorTrackGapSize 用于控制进度 Indicator 与剩余 Track 之间的距离。设置为 0dp 时两者首尾相接，不显示空白间隙；数值越大，两端的空白越明显。</string>
+    <string name="progress_circular_gap_config">关键配置：indicatorTrackGapSize=\"0dp\"</string>
+    <string name="progress_circular_indeterminate">不确定进度动画</string>
+
+    <string name="progress_rotating_title">固定圆弧无限旋转</string>
+    <string name="progress_rotating_description">RotatingCircularProgressIndicator 将动画、生命周期和样式解析封装在 View 内部。它使用确定进度保持圆弧长度不变，再匀速旋转整个圆环。</string>
+    <string name="progress_rotating_green_title">绿色圆角 · 顺时针</string>
+    <string name="progress_rotating_green_config">25%% 圆弧、0dp 间隙、4dp 粗细、2dp 圆角、1000ms/圈</string>
+    <string name="progress_rotating_blue_title">蓝色直角 · 逆时针</string>
+    <string name="progress_rotating_blue_config">35%% 圆弧、0dp 间隙、8dp 粗细、直角端点、1600ms/圈</string>
+    <string name="progress_rotating_start">全部开始</string>
+    <string name="progress_rotating_stop">全部停止</string>
 </resources>

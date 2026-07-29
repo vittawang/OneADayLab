@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RotatingCircularProgressIndicator">
+        <attr name="progressRotatingIndicatorColor" format="color" />
+        <attr name="progressRotatingTrackColor" format="color" />
+        <attr name="progressRotatingIndicatorSize" format="dimension" />
+        <attr name="progressRotatingTrackThickness" format="dimension" />
+        <attr name="progressRotatingTrackCornerRadius" format="dimension" />
+        <attr name="progressRotatingGapSize" format="dimension" />
+        <attr name="progressRotatingValue" format="integer" />
+        <attr name="progressRotatingDuration" format="integer" />
+        <attr name="progressRotatingDirection">
+            <enum name="clockwise" value="0" />
+            <enum name="counterclockwise" value="1" />
+        </attr>
+        <attr name="progressRotatingAutoStart" format="boolean" />
+    </declare-styleable>
+
+</resources>

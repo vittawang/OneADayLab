@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/progress_rotating_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/progress_rotating_description" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/progress_rotating_green_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <com.sunspot.progress.widget.RotatingCircularProgressIndicator
+            android:id="@+id/progress_rotating_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:progressRotatingAutoStart="true"
+            app:progressRotatingDirection="clockwise"
+            app:progressRotatingDuration="1000"
+            app:progressRotatingGapSize="0dp"
+            app:progressRotatingIndicatorColor="@color/progress_indicator"
+            app:progressRotatingIndicatorSize="56dp"
+            app:progressRotatingTrackColor="@color/progress_track"
+            app:progressRotatingTrackCornerRadius="2dp"
+            app:progressRotatingTrackThickness="4dp"
+            app:progressRotatingValue="25" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/progress_rotating_green_config" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/progress_rotating_blue_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <com.sunspot.progress.widget.RotatingCircularProgressIndicator
+            android:id="@+id/progress_rotating_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:progressRotatingAutoStart="true"
+            app:progressRotatingDirection="counterclockwise"
+            app:progressRotatingDuration="1600"
+            app:progressRotatingGapSize="0dp"
+            app:progressRotatingIndicatorColor="@color/progress_indicator_alt"
+            app:progressRotatingIndicatorSize="80dp"
+            app:progressRotatingTrackColor="@color/progress_track_alt"
+            app:progressRotatingTrackCornerRadius="0dp"
+            app:progressRotatingTrackThickness="8dp"
+            app:progressRotatingValue="35" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/progress_rotating_blue_config" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/progress_btn_start_rotation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/progress_rotating_start" />
+
+            <Button
+                android:id="@+id/progress_btn_stop_rotation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/progress_rotating_stop" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

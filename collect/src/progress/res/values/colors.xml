@@ -2,4 +2,8 @@
 <resources>
     <color name="progress_inverse_preview_bg">#FF202124</color>
     <color name="progress_inverse_preview_text">#FFFFFFFF</color>
+    <color name="progress_indicator">#FF286B49</color>
+    <color name="progress_indicator_alt">#FF4E6FD3</color>
+    <color name="progress_track">#FFE3F1E9</color>
+    <color name="progress_track_alt">#FFE2E7F8</color>
 </resources>
