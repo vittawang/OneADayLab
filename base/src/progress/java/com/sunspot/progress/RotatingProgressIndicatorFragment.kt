@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.sunspot.collect.R
+import com.sunspot.base.R
 import com.sunspot.progress.widget.RotatingCircularProgressIndicator
 
 /**

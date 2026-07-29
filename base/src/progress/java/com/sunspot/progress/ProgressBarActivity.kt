@@ -3,7 +3,7 @@ package com.sunspot.progress
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.sunspot.collect.R
+import com.sunspot.base.R
 import com.google.android.material.tabs.TabLayout
 
 /**

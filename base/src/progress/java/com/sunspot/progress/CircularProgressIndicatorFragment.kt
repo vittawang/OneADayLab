@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.sunspot.collect.R
+import com.sunspot.base.R
 
 /**
  * 展示 Material CircularProgressIndicator 的常见配置和动态进度用法。

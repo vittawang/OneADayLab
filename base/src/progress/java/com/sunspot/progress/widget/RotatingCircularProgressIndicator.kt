@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.sunspot.collect.R
+import com.sunspot.base.R
 import androidx.core.view.isVisible
 
 /**
