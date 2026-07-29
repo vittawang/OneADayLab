@@ -1,12 +1,13 @@
 package com.sunspot.odl
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.fragment.app.FragmentActivity
 import com.sunspot.dialog.CommonUseDialog
+import com.sunspot.libext.addAndCommit
 import com.sunspot.odl.databinding.ActivityMainBinding
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -18,5 +19,6 @@ class MainActivity : ComponentActivity() {
                 .setMessge("Just Relax")
                 .show()
         }
+        UsualFragment().addAndCommit(supportFragmentManager, container = R.id.frag_container)
     }
 }

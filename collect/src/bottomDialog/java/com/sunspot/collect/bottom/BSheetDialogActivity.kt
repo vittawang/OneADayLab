@@ -7,7 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.sunspot.collect.R
 import com.sunspot.collect.databinding.ActivityBottomSheetDialogBinding
-import com.sunspot.libext.addAndShow
+import com.sunspot.libext.addAndCommit
 
 class BSheetDialogActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,11 +22,11 @@ class BSheetDialogActivity : AppCompatActivity() {
         }
         binding.apply {
             btnFixHeight480.setOnClickListener {
-                BFixHeight480DialogFragment().addAndShow(supportFragmentManager)
+                BFixHeight480DialogFragment().addAndCommit(supportFragmentManager)
             }
 
             btnFixHei2.setOnClickListener {
-                BFixHeight480DialogFragment2().addAndShow(
+                BFixHeight480DialogFragment2().addAndCommit(
                     supportFragmentManager
                 )
             }
@@ -43,13 +43,13 @@ class BSheetDialogActivity : AppCompatActivity() {
                             "第二步：重新训练左侧的发力模式（治标）\n" +
                             "目标不是“上提”左侧，而是 “让左侧肩胛骨向后、向下平贴回胸廓”。\n" +
                             "\n"
-                ).addAndShow(supportFragmentManager)
+                ).addAndCommit(supportFragmentManager)
             }
             btnW1.setOnClickListener {
                 BWrapHeightDialogFragment.newInstance(
                     "第一步：重点松解紧张的右侧（治本）\n" +
                             "拉伸右侧斜方肌上束：坐直，用左手将头轻柔拉向左前方，同时右肩有意识下沉。感受右侧颈肩部的拉伸。保持30秒，重复3次。\n"
-                ).addAndShow(supportFragmentManager)
+                ).addAndCommit(supportFragmentManager)
             }
             btnW2.setOnClickListener {
                 BWrapHeightDialogFragment.newInstance(
@@ -105,7 +105,7 @@ class BSheetDialogActivity : AppCompatActivity() {
                             "调整：改变工作环境和习惯，给身体对称的刺激。\n" +
                             "\n" +
                             "请记住，您是在纠正一个长达十几年的错误模式，需要耐心。坚持正确的放松和训练2-4周，您会首先感觉到双侧肩膀的轻松感，随后才是外观上的改善。如果条件允许，咨询物理治疗师进行一次专业评估和指导，会是最高效的选择。"
-                ).addAndShow(supportFragmentManager)
+                ).addAndCommit(supportFragmentManager)
             }
         }
     }
