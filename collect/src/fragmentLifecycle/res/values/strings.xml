@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragl_commit_activity_label">Fragment Commit Demo</string>
+    <string name="fragl_commit_title">FragmentTransaction Commit 对比</string>
+    <string name="fragl_commit_comparison">commit：异步、安全、支持 BackStack\ncommitAllowingStateLoss：异步、允许状态丢失、支持 BackStack\ncommitNow：同步、安全、不支持 BackStack\ncommitNowAllowingStateLoss：同步、允许状态丢失、不支持 BackStack</string>
+    <string name="fragl_commit">commit()</string>
+    <string name="fragl_commit_allowing">commitAllowing\nStateLoss()</string>
+    <string name="fragl_commit_now">commitNow()</string>
+    <string name="fragl_commit_now_allowing">commitNowAllowing\nStateLoss()</string>
+    <string name="fragl_commit_delayed_title">状态保存后的提交实验</string>
+    <string name="fragl_commit_delayed_description">点击后会在 3 秒后提交。请在 3 秒内按 Home 键：commit() 会被安全捕获并显示异常；commitAllowingStateLoss() 不崩溃，但可能无法恢复。</string>
+    <string name="fragl_delayed_commit">延迟 commit()</string>
+    <string name="fragl_delayed_allowing">延迟 allowing()</string>
+    <string name="fragl_commit_fragment_area">Fragment 展示区域</string>
+    <string name="fragl_commit_log_title">执行日志</string>
+    <string name="fragl_commit_clear_log">清空</string>
+    <string name="fragl_commit_fragment_instance">Fragment 实例：#%1$d</string>
+    <string name="fragl_commit_fragment_created">创建时间：%1$s</string>
+</resources>

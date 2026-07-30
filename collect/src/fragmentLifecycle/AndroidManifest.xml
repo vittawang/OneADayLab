@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sunspot.collect">
+
+    <application>
+        <activity
+            android:name=".fragl.FragmentCommitDemoActivity"
+            android:exported="false"
+            android:label="@string/fragl_commit_activity_label"
+            android:theme="@style/Theme.Material3.Light" />
+
+        <activity
+            android:name=".fragl.FragShowHideActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light" />
+    </application>
+
+</manifest>
