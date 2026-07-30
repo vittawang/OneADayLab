@@ -79,6 +79,7 @@ abstract class BaseFragment<V : ViewBinding> : Fragment() {
     override fun onDestroyView() {
         dismissLoadingDialog()
         hasCreatedView = false
+        binding = null
         super.onDestroyView()
     }
 }

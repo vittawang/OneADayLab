@@ -26,12 +26,12 @@ abstract class BaseActivity<V : ViewBinding> : FragmentActivity() {
         binding = createViewBinding(layoutInflater)
         setContentView(binding.root)
         initView(binding)
-        initData(binding)
+        initData(binding, savedInstanceState)
     }
 
     abstract fun createViewBinding(layoutInflater: LayoutInflater): V
 
     abstract fun initView(binding: V)
 
-    open fun initData(binding: V) {}
+    open fun initData(binding: V, savedInstanceState: Bundle?) {}
 }

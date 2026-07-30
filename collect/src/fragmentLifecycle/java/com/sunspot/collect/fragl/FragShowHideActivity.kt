@@ -1,5 +1,6 @@
 package com.sunspot.collect.fragl
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.tabs.TabLayout
@@ -8,6 +9,7 @@ import com.sunspot.base.BaseFragment
 import com.sunspot.collect.R
 import com.sunspot.collect.databinding.FraglActivityLayoutBinding
 import com.sunspot.log.DLog
+import kotlin.math.max
 
 /**
  * -------------------------------------
@@ -18,6 +20,9 @@ import com.sunspot.log.DLog
  * 描述：Fragment add + show/hide 配合TabLayout实现切换
  * -------------------------------------
  * 备注：
+ * 1.页面数量变多或页面很重时，不再使用全部常驻的 show/hide
+ * 2.性能特点切换速度快、不销毁view页面全在内存中（内存评估）
+ * 3.切换到哪个页面哪个才会加载（延迟初始化）
  * -------------------------------------
  */
 class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
@@ -51,9 +56,19 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
 
             })
         }
+    }
+
+    override fun initData(binding: FraglActivityLayoutBinding, savedInstanceState: Bundle?) {
         //这里如果直接写0 activity重建时，fm恢复的fragment，second没隐藏，但check 0后first显示出来了，会出现两个fragment重叠的问题
-        //重建时 先从 FragmentManager 中找到当前未隐藏的 Fragment，恢复 currentIndex 和 TabLayout 选中位置 ?
-        selectFragment(0)
+        //重建时 先从savedInstanceState中取出上次选中的tab
+        val restoreTabIndex = savedInstanceState?.getInt(SAVED_TAB_INDEX, -1) ?: -1
+        applyTabSwitch(max(restoreTabIndex, 0))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(SAVED_TAB_INDEX, currentIndex)
+        super.onSaveInstanceState(outState)
+        DLog.logCommon(TAG, "restore tab Index $currentIndex")
     }
 
     private fun createFragment(tag: String): BaseFragment<*> {
@@ -99,6 +114,15 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
         //ft.commitAllowingStateLoss()
     }
 
+    private fun applyTabSwitch(index: Int) {
+        selectFragment(index)
+        binding.tabLayout.getTabAt(index)?.let {
+            if (!it.isSelected) {
+                it.select()
+            }
+        }
+    }
+
     /**
      * 可以在后台 isStateSaved=true的状态下使用，已经配合onResumeFragments做了兜底切换
      * 可以在任意线程调用
@@ -106,6 +130,7 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
     fun switchTab(index: Int) {
         if (index !in tags.indices) return
         runOnUiThread {
+            if (isFinishing || isDestroyed) return@runOnUiThread
             if (supportFragmentManager.isStateSaved) {
                 //Activity 退到后台、旋转或正在保存状态时，暂不提交事务
                 pendingTabSwitchIndex = index
@@ -116,8 +141,7 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
                 pendingTabSwitchIndex = index
                 return@runOnUiThread
             }
-            selectFragment(index)
-            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(index))
+            applyTabSwitch(index)
         }
     }
 
@@ -127,7 +151,7 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
         //FragmentActivity 专门提供的安全时机。执行到这里时，FragmentManager 已经退出“状态已保存”阶段，可以正常提交事务
         //解决IllegalStateException: Can not perform this action after onSaveInstanceState
         if (pendingTabSwitchIndex >= 0) {
-            selectFragment(pendingTabSwitchIndex)
+            applyTabSwitch(pendingTabSwitchIndex)
             pendingTabSwitchIndex = -1
         }
     }
@@ -136,6 +160,7 @@ class FragShowHideActivity : BaseActivity<FraglActivityLayoutBinding>() {
         const val TAG = "FragShowHideActivity"
         const val FRAGMENT_TAG_FIRST = "FirstFragment"
         const val FRAGMENT_TAG_SECOND = "SecondFragment"
+        const val SAVED_TAB_INDEX = "saved_tab_index"
     }
 
 
