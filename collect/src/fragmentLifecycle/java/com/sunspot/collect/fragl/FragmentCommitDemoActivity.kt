@@ -224,7 +224,6 @@ class FragmentCommitDemoActivity : BaseActivity<FraglCommitDemoActivityBinding>(
     }
 
     private fun appendLog(message: String) {
-        if (!::binding.isInitialized) return
         binding.fraglCommitLog.append("${currentTime()}  $message\n")
         binding.fraglCommitLogScroll.post {
             binding.fraglCommitLogScroll.fullScroll(android.view.View.FOCUS_DOWN)
