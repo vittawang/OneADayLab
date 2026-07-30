@@ -23,7 +23,12 @@ import com.sunspot.base.loading.LoadingDialog
  */
 abstract class BaseFragment<V : ViewBinding> : Fragment() {
 
-    protected lateinit var binding: V
+    //为什么需要两个属性? 私有属性负责内部用，赋值清空等；公有属性负责外部用，默认非空
+    private var _binding: V? = null
+    protected val binding: V
+        //对外提供一个不可赋值、非空的 Binding：
+        get() = checkNotNull(_binding)//每次访问 binding 时，都去读取 _binding;相当于 if(_b==null) throw NPE,else return _b，checkNotNull 大括号里是Exception的message信息，可以自定义
+
 
     private var loadingDialog: LoadingDialog? = null
     private var hasCreatedView = false
@@ -31,10 +36,10 @@ abstract class BaseFragment<V : ViewBinding> : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = createViewBinding(inflater, container, savedInstanceState)
+        _binding = createViewBinding(inflater, container, savedInstanceState)
         hasCreatedView = true
         initView(binding)
-        initData(binding)
+        initData(binding, savedInstanceState)
         return binding.root
     }
 
@@ -50,14 +55,11 @@ abstract class BaseFragment<V : ViewBinding> : Fragment() {
     /**
      * 绑定数据 D4
      */
-    abstract fun initData(binding: V)
+    open fun initData(binding: V, savedInstanceState: Bundle?) {}
 
     @JvmOverloads
     fun showLoadingDialog(message: CharSequence = getString(R.string.base_loading_default_message)) {
-        if (!hasCreatedView ||
-            !isAdded ||
-            !lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
-        ) {
+        if (!hasCreatedView || !isAdded || !lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
             return
         }
         val currentContext = context ?: return
@@ -79,7 +81,8 @@ abstract class BaseFragment<V : ViewBinding> : Fragment() {
     override fun onDestroyView() {
         dismissLoadingDialog()
         hasCreatedView = false
-        binding = null
         super.onDestroyView()
+        // 释放 Binding 对 View 树的引用
+        _binding = null
     }
 }

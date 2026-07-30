@@ -30,9 +30,6 @@ class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     override fun initView(binding: CoroutineFragmentCorBinding) {
     }
 
-    override fun initData(binding: CoroutineFragmentCorBinding) {
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e(TAG, "onCreate: " )

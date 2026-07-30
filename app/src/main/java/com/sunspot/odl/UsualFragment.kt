@@ -28,8 +28,4 @@ class UsualFragment : BaseFragment<UsualFragmentBinding>() {
         binding.show.setOnClickListener { showLoadingDialog() }
         binding.dismiss.setOnClickListener { dismissLoadingDialog() }
     }
-
-    override fun initData(binding: UsualFragmentBinding) {
-
-    }
 }

@@ -31,9 +31,6 @@ class JavaThreadFragment : BaseFragment<CoroutineFragmentJavaBinding>() {
     override fun initView(binding: CoroutineFragmentJavaBinding) {
     }
 
-    override fun initData(binding: CoroutineFragmentJavaBinding) {
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e(TAG, "onCreate: ")

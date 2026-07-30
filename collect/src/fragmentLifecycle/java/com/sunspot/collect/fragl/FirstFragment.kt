@@ -28,9 +28,6 @@ class FirstFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     override fun initView(binding: CoroutineFragmentCorBinding) {
     }
 
-    override fun initData(binding: CoroutineFragmentCorBinding) {
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.e(TAG, "onAttach: ")
