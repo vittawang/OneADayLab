@@ -3,6 +3,8 @@ package com.sunspot.collect.fragl;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -11,6 +13,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -206,6 +210,15 @@ public final class JavaThreadEx {
 
     /**
      * 场景：两个售票窗口同时卖同一批票。
+     * 竞态：两个线程共同操作一个office-int实体，会是66 55 44 33 22 11 00 这种现象，为什么是"每个号卖两遍"这种整齐的现象
+     * 原因：
+     * TicketOffice office = new TicketOffice();          // 只 new 了一个
+     * Thread windowAThread = new Thread(sellTask, "售票窗口-A");
+     * Thread windowBThread = new Thread(sellTask, "售票窗口-B");  // 两个线程跑同一个 sellTask
+     * 两个线程同时访问remainingTickets，那一时刻两个thread访问到的值都是6，-1 之后都是变成5，出现超卖一倍票的现象
+     * 如果sleep的时间不一样，可能的值就不规律了
+     * ↓
+     * 本质Bug：remainingTickets 读写不是原子的
      */
     public void unsafeTicketSale() {
         class TicketOffice {
@@ -246,11 +259,13 @@ public final class JavaThreadEx {
 
     /**
      * 场景：使用 synchronized 修复多个窗口重复售票。
+     *
      */
     public void synchronizedTicketSale() {
         class TicketOffice {
             private int remainingTickets = 6;
 
+            //sell方法加锁了
             synchronized boolean sellOne() {
                 if (remainingTickets <= 0) {
                     return false;
@@ -321,15 +336,15 @@ public final class JavaThreadEx {
      * 场景：三个下载线程安全增加“已完成数量”。
      */
     public void atomicDownloadCount() {
-        AtomicInteger completedCount = new AtomicInteger();
+        AtomicInteger completedCount = new AtomicInteger();//C-A-S 原子整数，初始 0
 
         for (int index = 1; index <= 3; index++) {
             int fileNumber = index;
             Thread downloadThread = new Thread(() -> {
-                if (!sleepSafely(fileNumber * 100L)) {
+                if (!sleepSafely(fileNumber * 100L)) {// 文件1睡100ms、2睡200ms、3睡300ms
                     return;
                 }
-                int count = completedCount.incrementAndGet();
+                int count = completedCount.incrementAndGet(); // 原子自增，返回自增后的值
                 log("文件 " + fileNumber + " 下载完成，当前完成数=" + count);
                 if (count == 3) {
                     log("全部下载完成，总数=" + count);
@@ -378,35 +393,40 @@ public final class JavaThreadEx {
 
     /**
      * 场景：外卖员等待，商家出餐后通知外卖员。
+     * 俩线程，外卖员while+wait，商家notifyAll
      */
     public void waitForMeal() {
+        //餐锁
         Object mealLock = new Object();
+        //餐状态
         boolean[] mealReady = {false};
 
+        //外卖员线程
         Thread courierThread = new Thread(() -> {
-            synchronized (mealLock) {
-                while (!mealReady[0]) {
+            synchronized (mealLock) {//外卖员拿到 餐锁
+                while (!mealReady[0]) {//while 循环 + wait，持续等待
                     try {
                         log("餐还没做好，外卖员调用 wait() 等待");
-                        mealLock.wait();
+                        mealLock.wait();//释放 餐锁，等待被其他线程调用 notify() 或 notifyAll()
                     } catch (InterruptedException exception) {
                         Thread.currentThread().interrupt();
                         log("外卖员取消等待");
                         return;
                     }
                 }
-                log("外卖员收到通知，取餐离开");
+                log("外卖员收到通知，取餐离开");//2-会走这里
             }
         }, "courierThread");
 
+        //商家线程
         Thread restaurantThread = new Thread(() -> {
             if (!sleepSafely(400)) {
                 return;
             }
-            synchronized (mealLock) {
+            synchronized (mealLock) {//商家拿到 餐锁
                 mealReady[0] = true;
                 log("商家出餐，调用 notifyAll()");
-                mealLock.notifyAll();
+                mealLock.notifyAll();//1-这里执行完，走2-
             }
         }, "restaurantThread");
 
@@ -419,9 +439,11 @@ public final class JavaThreadEx {
     /**
      * 场景：首页等待用户、广告、推荐三个接口完成。
      * 等待发生在 homeRenderThread，不阻塞主线程。
+     * <p>
+     * 还有这种api呐，以前都是写三个标记位，回来一个接口给一个接口置true，三个都true才开始渲染，感觉不是很好用
      */
     public void loadHomePage() {
-        CountDownLatch allApiFinished = new CountDownLatch(3);
+        CountDownLatch allApiFinished = new CountDownLatch(3);// 计数器 = 3
 
         startApiRequest("用户接口", 200, allApiFinished);
         startApiRequest("广告接口", 350, allApiFinished);
@@ -430,7 +452,7 @@ public final class JavaThreadEx {
         Thread homeRenderThread = new Thread(() -> {
             try {
                 log("等待三个接口完成，调用 CountDownLatch.await()");
-                allApiFinished.await();
+                allApiFinished.await(); // 阻塞，直到计数器归 0
                 log("三个接口均完成，开始渲染首页");
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
@@ -452,15 +474,15 @@ public final class JavaThreadEx {
             );
             activeExecutors.add(priceExecutor);
             try {
-                Callable<Integer> calculatePrice = () -> {
+                Callable<Integer> calculatePrice = () -> { // 有返回值的任务，跟Runnable相比
                     log("开始计算：商品 80 + 运费 10 - 优惠 20");
                     Thread.sleep(300);
                     return 80 + 10 - 20;
                 };
 
-                Future<Integer> priceFuture = priceExecutor.submit(calculatePrice);
+                Future<Integer> priceFuture = priceExecutor.submit(calculatePrice); //提交callable计算任务，耗时，在未来拿到一个Future<Integer>
                 log("orderPriceThread 调用 Future.get() 等待价格");
-                int finalPrice = priceFuture.get();
+                int finalPrice = priceFuture.get(); //阻塞 等待结果
                 log("订单最终价格=" + finalPrice);
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
@@ -483,22 +505,7 @@ public final class JavaThreadEx {
     public void uploadImages() {
         Thread uploadResultThread = new Thread(() -> {
             CountDownLatch uploadsFinished = new CountDownLatch(6);
-            AtomicInteger threadNumber = new AtomicInteger();
-            ThreadPoolExecutor uploadPool = new ThreadPoolExecutor(
-                    2,
-                    3,
-                    5,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(2),
-                    runnable -> new Thread(
-                            runnable,
-                            "upload-" + threadNumber.incrementAndGet()
-                    ),
-                    (runnable, executor) -> {
-                        log("线程和队列都满了，第六张图片由 uploadResultThread 上传");
-                        runnable.run();
-                    }
-            );
+            ThreadPoolExecutor uploadPool = getThreadPoolExecutor();
             activeExecutors.add(uploadPool);
 
             try {
@@ -529,6 +536,31 @@ public final class JavaThreadEx {
         }, "uploadResultThread");
         activeThreads.add(uploadResultThread);
         uploadResultThread.start();
+    }
+
+    @NonNull
+    private ThreadPoolExecutor getThreadPoolExecutor() {
+        AtomicInteger threadNumber = new AtomicInteger();
+        return new ThreadPoolExecutor(
+                2,                       //1.corePoolSize → 核心线程数（常活着）
+                3,                                  //2.maximumPoolSize → 最大线程数（最多能活几个线程）
+                5,                                  //3.keepAliveTime → 非核心线程，超过多长时间线程不使用就回收
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(2),//4.workQueue → 超过线程maxNum后，task进入阻塞队列等待
+                new ThreadFactory() {               //5.threadFactory → 自定义线程名字的工厂
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        return new Thread(r, "upload-" + threadNumber.incrementAndGet());
+                    }
+                },
+                new RejectedExecutionHandler() {    //6.rejectedHandler → 线程和队列都满了，拒绝策略
+                    @Override
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        //丢弃任务
+                        r.run();
+                    }
+                }
+        );
     }
 
     /**
@@ -585,7 +617,7 @@ public final class JavaThreadEx {
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
             } finally {
-                latch.countDown();
+                latch.countDown(); // 无论成功失败，计数器减 1
             }
         }, apiName);
         activeThreads.add(apiThread);
