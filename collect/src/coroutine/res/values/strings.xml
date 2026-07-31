@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cor_java_title">Java 经典线程实验室</string>
+    <string name="cor_java_intro">每个实验先给出一个实际场景，再观察线程名、执行顺序和结果。</string>
+    <string name="cor_java_section_basics">一、线程基础</string>
+    <string name="cor_java_thread">下载头像：Thread</string>
+    <string name="cor_java_runnable">复用下载：Runnable</string>
+    <string name="cor_java_start_run">图片压缩：start / run</string>
+    <string name="cor_java_thread_state">观察下载线程状态</string>
+    <string name="cor_java_section_control">二、线程控制</string>
+    <string name="cor_java_sleep_retry">下载重试：sleep</string>
+    <string name="cor_java_join">下载后解压：join</string>
+    <string name="cor_java_interrupt">取消下载：interrupt</string>
+    <string name="cor_java_section_safety">三、线程安全</string>
+    <string name="cor_java_race">多窗口卖票：竞态</string>
+    <string name="cor_java_synchronized">安全卖票：synchronized</string>
+    <string name="cor_java_volatile">停止同步：volatile</string>
+    <string name="cor_java_atomic">下载计数：AtomicInteger</string>
+    <string name="cor_java_lock">银行取款：ReentrantLock</string>
+    <string name="cor_java_section_coordination">四、线程协作与线程池</string>
+    <string name="cor_java_wait_notify">等待出餐：wait / notify</string>
+    <string name="cor_java_latch">首页等接口：Latch</string>
+    <string name="cor_java_future">订单价格：Future</string>
+    <string name="cor_java_thread_pool">批量上传：线程池</string>
+    <string name="cor_java_section_android">五、Android 主线程切换</string>
+    <string name="cor_java_handler">接口结果 → Handler → 更新页面</string>
+    <string name="cor_java_coroutine_map">协程对照预告\nThread/Runnable → launch/Job\nExecutorService → CoroutineDispatcher\nCallable/Future → async/Deferred\nsleep → delay\ninterrupt → Job.cancel\njoin → Job.join\nsynchronized/Lock → Mutex\nCountDownLatch → coroutineScope/awaitAll\nHandler(MainLooper) → Dispatchers.Main</string>
+    <string name="cor_java_log_title">实验日志</string>
+    <string name="cor_java_stop">停止</string>
+    <string name="cor_java_clear_log">清空</string>
+    <string name="cor_java_log_ready">准备完成，请选择一个实验。</string>
+</resources>

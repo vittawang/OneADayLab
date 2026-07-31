@@ -1,7 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2e8277">
+    android:background="#FFF8FAFC"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cor_nsv_java_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/cor_tv_java_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cor_java_title"
+                android:textColor="#FF0F172A"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cor_tv_java_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/cor_java_intro"
+                android:textColor="#FF475569"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="@string/cor_java_section_basics" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_thread"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_thread" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_runnable"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_runnable" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_start_run"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_start_run" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_thread_state"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_thread_state" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="@string/cor_java_section_control" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_sleep_retry"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_sleep_retry" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_join"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_join" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/cor_btn_java_interrupt"
+                style="@style/CorThreadFullBtn"
+                android:text="@string/cor_java_interrupt" />
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="@string/cor_java_section_safety" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_race"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_race" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_synchronized"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_synchronized" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_volatile"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_volatile" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_atomic"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_atomic" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/cor_btn_java_lock"
+                style="@style/CorThreadFullBtn"
+                android:text="@string/cor_java_lock" />
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="@string/cor_java_section_coordination" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_wait_notify"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_wait_notify" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_latch"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_latch" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_java_future"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_future" />
+
+                <Button
+                    android:id="@+id/cor_btn_java_thread_pool"
+                    style="@style/CorThreadBtn"
+                    android:text="@string/cor_java_thread_pool" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="@string/cor_java_section_android" />
+
+            <Button
+                android:id="@+id/cor_btn_java_handler"
+                style="@style/CorThreadFullBtn"
+                android:text="@string/cor_java_handler" />
+
+            <TextView
+                android:id="@+id/cor_tv_java_coroutine_map"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:background="#FFEFF6FF"
+                android:padding="12dp"
+                android:text="@string/cor_java_coroutine_map"
+                android:textColor="#FF1E3A5F"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cor_java_log_title"
+            android:textColor="#FF0F172A"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/cor_btn_java_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cor_java_stop" />
+
+        <Button
+            android:id="@+id/cor_btn_java_clear_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/cor_java_clear_log" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/cor_sv_java_log"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="#FF111827"
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/cor_tv_java_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:padding="12dp"
+            android:text="@string/cor_java_log_ready"
+            android:textColor="#FFE2E8F0"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
+    </ScrollView>
+</LinearLayout>
