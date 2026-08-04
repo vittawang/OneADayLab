@@ -3,6 +3,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000889">
+    android:paddingHorizontal="10dp"
+    android:paddingTop="10dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kotlin协程"
+                android:textColor="#FF0F172A"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="协程就是Kotlin的封装类，封装方法暂停再原地继续执行的机制，他可以跑在任何线程上，利用系统的暂停机制，非常高效，跟线程暂停/切换相比，cpu资源消耗非常低。"
+                android:textColor="#FF475569"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="一、体验协程" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_launch"
+                    style="@style/CorThreadBtn"
+                    android:text="启动协程：launch" />
+
+                <Button
+                    android:id="@+id/cor_btn_kill_callback"
+                    style="@style/CorThreadBtn"
+                    android:text="网络请求，干掉callback" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="经典：子线程请求网络，主线程刷新UI" />
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="二、Dispather" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>

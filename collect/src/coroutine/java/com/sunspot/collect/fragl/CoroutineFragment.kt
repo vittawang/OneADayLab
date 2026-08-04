@@ -29,17 +29,18 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     ): CoroutineFragmentCorBinding = CoroutineFragmentCorBinding.inflate(inflater, container, false)
 
     override fun initView(binding: CoroutineFragmentCorBinding) {
+        binding.corBtnLaunch.setOnClickListener { launchCoroutine() }
+        binding.corBtnKillCallback.setOnClickListener { killCallback() }
     }
 
     override fun initData(binding: CoroutineFragmentCorBinding, savedInstanceState: Bundle?) {
-        //协程是一段可以原地暂停再原地继续执行的代码，他不是线程
-        //线程 是系统创建调度的，数量多了系统吃不消
-        //协程就是一个封装类 无数个数量都没事，可以成千上万个协程跑在一个线程上。它暂停是不占用线程，那条线程可以立刻去干别的活。
-        lifecycleScope.launch {
-            Log.e(TAG, "启动一个协程 线程名：${Thread.currentThread().name} ")//main
-        }
 
-        //（1）Android经典场景，子线程请求网络，主线程更新UI
+    }
+
+    /**
+     * （1）Android经典场景，子线程请求网络，主线程更新UI
+     */
+    private fun killCallback() {
         //老写法
         requestUserInfo(onGetDataCallback = { userInfo ->
             Log.e(TAG, "Java initData: 调用方取到了网络耗时请求到的数据：$userInfo")
@@ -50,7 +51,16 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         lifecycleScope.launch {
             val userInfo = requestUserInfo()
             Log.e(TAG, "KT initData: 调用方直接拿到了return的返回值数据 不用callback $userInfo")
-//            tv.setText(userInfo.name)
+            //            tv.setText(userInfo.name)
+        }
+    }
+
+    //协程是一段可以原地暂停再原地继续执行的代码，他不是线程
+    //线程 是系统创建调度的，数量多了系统吃不消
+    //协程就是一个封装类 无数个数量都没事，可以成千上万个协程跑在一个线程上。它暂停是不占用线程，那条线程可以立刻去干别的活。
+    private fun launchCoroutine() {
+        lifecycleScope.launch {
+            Log.e(TAG, "启动一个协程 线程名：${Thread.currentThread().name} ")//main
         }
     }
 
