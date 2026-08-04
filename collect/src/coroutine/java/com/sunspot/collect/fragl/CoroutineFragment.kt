@@ -1,6 +1,7 @@
 package com.sunspot.collect.fragl
 
 import android.annotation.SuppressLint
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,10 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import com.sunspot.base.BaseFragment
 import com.sunspot.collect.databinding.CoroutineFragmentCorBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.ArrayDeque
 
 /**
@@ -38,12 +43,126 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
 
     override fun initView(binding: CoroutineFragmentCorBinding) {
         binding.corBtnLaunch.setOnClickListener { launchCoroutine() }
-        binding.corBtnKillCallback.setOnClickListener { killCallback() }
+        binding.corBtnKillCallback.setOnClickListener { killCallback() }//1
         binding.corBtnClearLog.setOnClickListener { clearLog() }
-        binding.corBtnSwitchThread.setOnClickListener { withContextSwitchThread() }
-        binding.corBtnUiOnIo.setOnClickListener { touchUiOnIoThread() }
+        binding.corBtnSwitchThread.setOnClickListener { withContextSwitchThread() }//2
+        binding.corBtnUiOnIo.setOnClickListener { touchUiOnIoThread() }//3
         binding.corBtnSync.setOnClickListener { serialRequest() }
-        binding.corBtnAsync.setOnClickListener { parallelRequest() }
+        binding.corBtnAsync.setOnClickListener { parallelRequest() }//4
+        binding.corBtnJoin.setOnClickListener { jobJoin() }//5
+        binding.corBtnCancelStart.setOnClickListener { startCancelableJob() }//6
+        binding.corBtnCancelDo.setOnClickListener { cancelJob6() }//6
+        binding.corBtnWithTimeout.setOnClickListener { timeoutDemo() }//7
+    }
+
+    /**
+     * withTimeout：到点自动 cancel。withTimeoutOrNull 超时返回 null（业务友好）。
+     */
+    private fun timeoutDemo() {
+        lifecycleScope.launch {
+            //挂起函数，返回值是block块的返回值。最多等2s 否则返回null
+            log("withTimeoutOrNull 2s")
+            val datePage = withTimeoutOrNull(2000) {
+                log("开始请求（模拟耗时 3 秒，会超时）")
+                delay(3000)
+                DataPage("没网啦！")
+            }
+            if (datePage == null) {
+                log("请求超时！withTimeoutOrNull 返回 null")
+                binding.tvUser.text = "网络超时，请重试"
+            } else {
+                log("请求成功：$datePage")
+                binding.tvUser.text = datePage.content
+            }
+        }
+    }
+
+    private var job6: Job? = null
+
+    /**
+     * （6）job cancel: 立即标记协程为取消状态，执行到下一个挂起点(如delay)自动检查状态，而后取消。没有下一个挂起点，可以手动判断 isActive 实现。
+     * 业务场景：开启下载任务，每1s(delay 挂起点)加5，过程中点cancel,看协程是如何被取消的
+     * 疑问🤔：那在接口请求的例子中，我这个接口正在请求着，退出页面了，此时cancel掉协程也不管用啊，接口正在执行中，已经没有挂起点了
+     *      —— 1. retrofit 在coroutine cancel中把OkHttp的Call cancel掉了，协程友好的网络库！
+     *      —— 2. 在withContext往主线程切的时候，就是挂起点，至少能保证不乱刷UI，不过线程确实会执行完，会占用些资源。
+     *
+     */
+    private fun startCancelableJob() {
+        job6 = lifecycleScope.launch(Dispatchers.IO) {
+            log("开始下载任务")
+            var progress = 0
+            while (progress < 100) {
+                delay(1000) //挂起点：会响应cancel取消
+                progress += 10
+                log("当前进度：$progress%")
+            }
+            log("任务完成")//若中途取消，这句不会走到
+        }
+
+
+//        //改成sleep 没有挂起点了，cancel是停不了协程的
+//        job6 = lifecycleScope.launch(Dispatchers.IO) {
+//            log("开始下载任务")
+//            var progress = 0
+//            while (progress < 100) {
+//                Thread.sleep(1200)
+//                progress += 10
+//                log("当前进度：$progress%")
+//            }
+//            log("任务完成")
+//        }
+
+
+//        //手动判断isActive
+//        job6 = lifecycleScope.launch(Dispatchers.IO) {
+//            log("开始下载任务")
+//            var progress = 0
+//            //⬇️ 主动判断标记位状态
+//            while (progress < 100) {
+//                if (!isActive) {
+//                    log("任务取消，已返回")
+//                    return@launch
+//                }
+//                Thread.sleep(1200)
+//                progress += 10
+//                log("当前进度：$progress%")
+//            }
+//            log("任务完成")
+//        }
+
+    }
+
+    /**
+     * 协作式取消：cancel() 发信号，挂起点(delay) 检查到后抛 CancellationException 停止
+     */
+    private fun cancelJob6() {
+        log("点了取消，调用 job.cancel()")
+        job6?.cancel()
+        log("已给协程打cancel标记，下一个挂起点(delay)会报CancellationException，协程停止。这个Exception被协程框架捕获处理了，认为是正常的取消收尾 静默吞掉。")
+    }
+
+
+    /**
+     * （5）协程的返回值 是Job
+     *      挂起函数的返回值是T-Data，或者空
+     *  业务场景：等下载任务（子协程执行 → fork 分叉）完成时（子协程结束 → join 汇合），告诉UI 任务完成了。
+     */
+    private fun jobJoin() {
+        lifecycleScope.launch {//父协程
+            val job = launch(Dispatchers.IO) { //子协程
+                log("下载任务，子协程开始")
+                delay(3000)
+                log("下载任务，子协程结束，耗时3s")
+            }
+            //1. 这样直接执行的话 会不等job 执行完，立刻执行这里
+//            binding.tvUser.text = "🎉任务完成！"
+//            log("☹️ 根本没等3s耗时，直接就完成了，肯定不对！")
+
+            //2. 这样执行的话，会等job执行完，再更新UI，注意这里是main线程
+            job.join()
+            binding.tvUser.text = "🎉任务完成！"
+            log("🎉任务完成！")
+        }
     }
 
     /**
@@ -52,6 +171,7 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
      * 日志信息：
      * 1. 串行时，两个方法分开写withContext(IO) 竟然走的是同一个线程Worker-1 ？就串行了？如果他走的不是同一个线程 不就并行了吗？
      *      —— 涉及到两个挂起函数在一个协程里，他就是模拟代码执行顺序，上一个完全执行完，下一个才开跑
+     * 2. 真实场景经常是这样的 异步请求两个接口，两个接口都回来才更新UI，换Java写法，要两个callback 两个标记，都判断回来才能更新UI。
      *
      */
     @SuppressLint("SetTextI18n")

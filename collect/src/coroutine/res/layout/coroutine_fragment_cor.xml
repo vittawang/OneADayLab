@@ -83,12 +83,40 @@
                 <Button
                     android:id="@+id/cor_btn_sync"
                     style="@style/CorThreadBtn"
-                    android:text="串行请求：两个挂起函数" />
+                    android:text="串行请求: 两个挂起函数顺序执行" />
 
                 <Button
                     android:id="@+id/cor_btn_async"
                     style="@style/CorThreadBtn"
-                    android:text="并行请求：async/await" />
+                    android:text="并行请求: async/await" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_join"
+                    style="@style/CorThreadBtn"
+                    android:text="分叉和汇合: \njoin" />
+
+                <Button
+                    android:id="@+id/cor_btn_cancel_start"
+                    style="@style/CorThreadBtn"
+                    android:text="协作式取消：\n启动任务" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_cancel_do"
+                    style="@style/CorThreadBtn"
+                    android:text="取消任务：\ncancel" />
+
+                <Button
+                    android:id="@+id/cor_btn_with_timeout"
+                    style="@style/CorThreadBtn"
+                    android:text="超时控制：withTimeOut" />
 
             </LinearLayout>
 
