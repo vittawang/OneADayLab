@@ -10,8 +10,10 @@ import android.widget.ScrollView
 import androidx.lifecycle.lifecycleScope
 import com.sunspot.base.BaseFragment
 import com.sunspot.collect.databinding.CoroutineFragmentCorBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.ArrayDeque
 
 /**
@@ -36,6 +38,56 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         binding.corBtnLaunch.setOnClickListener { launchCoroutine() }
         binding.corBtnKillCallback.setOnClickListener { killCallback() }
         binding.corBtnClearLog.setOnClickListener { clearLog() }
+        binding.corBtnSwitchThread.setOnClickListener { withContextSwitchThread() }
+        binding.corBtnUiOnIo.setOnClickListener { touchUiOnIoThread() }
+    }
+
+    /**
+     * android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
+     *                                                       	at android.view.ViewRootImpl.checkThread(ViewRootImpl.java:11177)
+     *                                                       	at android.view.ViewRootImpl.requestLayout(ViewRootImpl.java:2482)
+     *                                                       	at android.view.View.requestLayout(View.java:27053)
+     *                                                       	at android.view.View.requestLayout(View.java:27053)
+     *                                                       	at android.view.View.requestLayout(View.java:27053)
+     *                                                       	at android.view.View.requestLayout(View.java:27053)
+     *                                                       	at android.view.View.requestLayout(View.java:27053)
+     */
+    private fun touchUiOnIoThread() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                log("IO 线程 设置tv text")
+                try {
+                    binding.tvUser.text = "touchUiOnIoThread"
+                } catch (e: Exception) {
+                    log("崩了：${e.javaClass.simpleName} —— ${e.message}")
+                }
+            }
+        }
+    }
+
+    /**
+     * （2）withContext(IO) 切线程，默认协程跑在主线程上，不能执行Thread.sleep，现在切到子线程，可以放心做耗时操作啦。且能用return 直接拿回耗时结果,不用callback。
+     * 例子：真实网络请求，子线程耗时，主线程刷新
+     * review
+     * 1. 协程里优先用delay而不是sleep。
+     *          delay 挂起，线程可以瞬间去干其他协程的活；
+     *          sleep阻塞，线程被占死2s，不能去干其他协程的活。
+     */
+    private fun withContextSwitchThread() {
+        lifecycleScope.launch {
+            //这里还是main线程
+            log("1️⃣协程起点Main，准备切IO")//准备挂起，挂起后协程打标记，withContext(IO) 协程内部分配线程池处理执行。
+            val result = withContext(Dispatchers.IO) {//DefaultDispatcher-worker-1 协程内部的默认线程池
+                //这里就是子线程了
+                log("withContext(IO) 切完成线程后")
+                Thread.sleep(2000)
+                log("thread sleep 2s，模拟网络请求")
+                //注意 这里就是返回值，不用return。最后一行是block块的返回值，最终变成withContext的返回值，即 result=DataUserInfo。比 Handler 回调优雅。
+                DataUserInfo("vitta", 2)
+            }
+            log("跳出withContext(IO)块，自动切回Main，更新UI")//切回线程是自动的，不用操作handler post
+            binding.tvUser.text = result.toString()
+        }
     }
 
     //协程是一段可以原地暂停再原地继续执行的代码，他不是线程
@@ -102,7 +154,11 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     }
 
 
-    data class DataUserInfo(val name: String, val age: Int)
+    data class DataUserInfo(val name: String, val age: Int) {
+        companion object {
+            fun default() = DataUserInfo(name = "vitta", age = 18)
+        }
+    }
 
     // ==================== 日志模块 ====================
     // 屏幕日志框：任何线程都可调用 log()，内部自动切回主线程刷新，并附带线程名前缀。
