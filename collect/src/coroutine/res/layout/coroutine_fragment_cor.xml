@@ -65,12 +65,30 @@
                 <Button
                     android:id="@+id/cor_btn_switch_thread"
                     style="@style/CorThreadBtn"
-                    android:text="切IO线程：withContxt(IO)" />
+                    android:text="切线程 withContxt(IO)" />
 
                 <Button
                     android:id="@+id/cor_btn_ui_on_io"
                     style="@style/CorThreadBtn"
                     android:text="误区：IO线程碰UI" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/CorThreadSectionTitle"
+                android:text="三、协程控制" />
+
+            <LinearLayout style="@style/CorThreadBtnRow">
+
+                <Button
+                    android:id="@+id/cor_btn_sync"
+                    style="@style/CorThreadBtn"
+                    android:text="串行请求：两个挂起函数" />
+
+                <Button
+                    android:id="@+id/cor_btn_async"
+                    style="@style/CorThreadBtn"
+                    android:text="并行请求：async/await" />
 
             </LinearLayout>
 

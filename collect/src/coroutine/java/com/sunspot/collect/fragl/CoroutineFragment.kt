@@ -1,5 +1,6 @@
 package com.sunspot.collect.fragl
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.sunspot.base.BaseFragment
 import com.sunspot.collect.databinding.CoroutineFragmentCorBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,9 +42,67 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         binding.corBtnClearLog.setOnClickListener { clearLog() }
         binding.corBtnSwitchThread.setOnClickListener { withContextSwitchThread() }
         binding.corBtnUiOnIo.setOnClickListener { touchUiOnIoThread() }
+        binding.corBtnSync.setOnClickListener { serialRequest() }
+        binding.corBtnAsync.setOnClickListener { parallelRequest() }
     }
 
     /**
+     * （4）并行请求 async()
+     * 翻译：async 异步；await 等待；defer 延迟
+     * 日志信息：
+     * 1. 串行时，两个方法分开写withContext(IO) 竟然走的是同一个线程Worker-1 ？就串行了？如果他走的不是同一个线程 不就并行了吗？
+     *      —— 涉及到两个挂起函数在一个协程里，他就是模拟代码执行顺序，上一个完全执行完，下一个才开跑
+     *
+     */
+    @SuppressLint("SetTextI18n")
+    private fun parallelRequest() {
+        //异步请求 并行
+        lifecycleScope.launch {
+            log("=======两个挂起并行（async/await）=======")
+            val start = System.currentTimeMillis()
+            val pageDeferred = async { queryHomePage() }//立刻开跑 1.5s
+            //async 返回值是 Deferred<T> 延迟的Data
+            val userDeferred = async { queryUser() }//立刻开跑 1s，不等上面的挂起结束，才叫两个挂起 并行执行嘛！
+            //await 返回值是 T，就是Data
+            val dataP = pageDeferred.await()
+            val dataU = userDeferred.await()
+            log("并行：两个接口下面调用，耗时 ${(System.currentTimeMillis() - start) / 1000f}s,开始更新UI")
+            binding.tvUser.text = "async/await并行： ${dataU.name} - ${dataP.content}"
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun serialRequest() {
+        //同步请求 串行
+        lifecycleScope.launch {
+            log("=======两个挂起串行=======")
+            val start = System.currentTimeMillis()
+            val dataUser = queryUser() //协程挂起，直到完全结束了，返回值。 1s
+            val dataPage = queryHomePage()//再执行下一个挂起1.5s，所以才叫串行，不是分两个线程执行下去了
+            log("串行：两个接口下面调用，耗时 ${(System.currentTimeMillis() - start) / 1000f}s,开始更新UI")//2.532s
+            binding.tvUser.text = "串行 ${dataUser.name} - ${dataPage.content}"
+        }
+    }
+
+
+    /**
+     * 🎯这个写法 是Google范式写法，保证调用方 Main安全，方法调用完 自动切回Main了，很安全！
+     */
+    private suspend fun queryUser() = withContext(Dispatchers.IO) {
+        Thread.sleep(1000)
+        log("请求到user 信息，耗时1s")
+        DataUserInfo("vitta", 4)
+    }
+
+    private suspend fun queryHomePage() = withContext(Dispatchers.IO) {
+        Thread.sleep(1500)
+        log("请求到homePage信息，耗时1.5s")
+        DataPage("页面内容")
+    }
+
+
+    /**
+     * （3）子线程touch ui
      * android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
      *                                                       	at android.view.ViewRootImpl.checkThread(ViewRootImpl.java:11177)
      *                                                       	at android.view.ViewRootImpl.requestLayout(ViewRootImpl.java:2482)
@@ -154,11 +214,8 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     }
 
 
-    data class DataUserInfo(val name: String, val age: Int) {
-        companion object {
-            fun default() = DataUserInfo(name = "vitta", age = 18)
-        }
-    }
+    data class DataUserInfo(val name: String, val age: Int)
+    data class DataPage(val content: String)
 
     // ==================== 日志模块 ====================
     // 屏幕日志框：任何线程都可调用 log()，内部自动切回主线程刷新，并附带线程名前缀。
