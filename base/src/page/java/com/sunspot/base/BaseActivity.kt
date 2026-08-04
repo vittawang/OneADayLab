@@ -2,7 +2,7 @@ package com.sunspot.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 
 /**
@@ -16,7 +16,7 @@ import androidx.viewbinding.ViewBinding
  * 备注：
  * -------------------------------------
  */
-abstract class BaseActivity<V : ViewBinding> : FragmentActivity() {
+abstract class BaseActivity<V : ViewBinding> : AppCompatActivity() {
 
     private var _binding: V? = null
     protected val binding: V

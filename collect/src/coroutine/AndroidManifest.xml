@@ -5,8 +5,7 @@
     <application>
         <activity
             android:name=".fragl.CoroutineActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Material3.Light" />
+            android:exported="false"/>
     </application>
 
 </manifest>

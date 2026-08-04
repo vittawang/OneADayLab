@@ -8,7 +8,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                 <Button
                     android:id="@+id/cor_btn_kill_callback"
                     style="@style/CorThreadBtn"
-                    android:text="网络请求，干掉callback" />
+                    android:text="网络请求 干掉callback" />
             </LinearLayout>
 
 
@@ -66,5 +67,47 @@
         </LinearLayout>
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="6dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="运行日志"
+            android:textColor="#FF0F172A"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/cor_btn_clear_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清空" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/cor_sv_log"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginBottom="10dp"
+        android:background="#FF111827"
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/cor_tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:padding="12dp"
+            android:text="准备完成，点上面的按钮看日志。"
+            android:textColor="#FFE2E8F0"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
+    </ScrollView>
 
 </LinearLayout>
