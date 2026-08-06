@@ -17,7 +17,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
@@ -53,10 +56,81 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         binding.corBtnCancelStart.setOnClickListener { startCancelableJob() }//6
         binding.corBtnCancelDo.setOnClickListener { cancelJob6() }//6
         binding.corBtnWithTimeout.setOnClickListener { timeoutDemo() }//7
+        binding.corBtnMutex.setOnClickListener { mutexDemo() }//8
+
     }
 
     /**
-     * withTimeout：到点自动 cancel。withTimeoutOrNull 超时返回 null（业务友好）。
+     * （8）锁
+     * 业务场景：100 个协程并发，每个给计数器 +1 共 1000 次，期望总数 100000。
+     */
+    private fun mutexDemo() {
+//        var result = 0
+//        val job = lifecycleScope.launch {
+//            for (i in 1..100) {
+//                //启100个协程 计算子线程
+//                launch(Dispatchers.Default) {
+//                    log("开始计算：result 当前值: $result")
+//                    for (i in 0 until 1000) {
+//                        result++ //加1 1000次
+//                    }
+//                }
+//            }
+//        }
+//        log("最终结果：$result")//这种写法，lifecycleScope.launch点火即走，他立刻返回，函数继续立刻向下执行，打印的result就是0.
+//        //如果这里job.join 不行，挂起点 挂起函数都得在协程中执行，这里编译不通过，所以我们要启子协程，等100个子协程join
+
+        //无锁版本
+
+        //这样子 只有代码切主线，没有子线程啊 ↓ ⚠️ 只对父协程切到子线程了，100个子协程就能在好几个线程执行？ → ✅ 子协程默认继承父协程的上下文，包括Dispatcher,才有竞态
+        lifecycleScope.launch(Dispatchers.Default) {//启父协程
+            val jobs = mutableListOf<Job>()
+            var result = 0
+            for (i in 0 until 100) {
+                val job = launch {//启100个子协程，一下子fork出100条代码运行支线。每个支线都对result +1 1000次，期望最终结果是100000
+                    for (i in 0 until 1000) {
+                        result++ //非原子的读写 值肯定达不到预期
+                    }
+                    log("一个协程结束 当前值: $result")
+                }
+                jobs.add(job)
+            }
+
+            //等所有的子协程都运行完
+//            for (job in jobs) {
+//                job.join()//挂起点 汇合入父协程主线
+//            }
+            //↓ 可以优化称
+            jobs.joinAll()
+            //执行到这里 说明100个子协程都结束了
+            log("最终结果：$result")
+        }
+
+
+        //有锁的安全版本
+        lifecycleScope.launch {
+            delay(3000)//等上面无锁版本执行完，日志在一起清楚一点
+            log("\n\n===mutex.withLock 加锁版本开始===")
+            val mutex = Mutex()
+            var result = 0
+            val jobs = mutableListOf<Job>()
+            for (i in 0 until 100) {
+                val job = launch(Dispatchers.Default) {
+                    for (i in 0 until 1000) {
+                        mutex.withLock { result++ } //锁住 同时只能有一个协程进来执行  原子的读写
+                    }
+                    log("一个协程计算结束 当前值：$result")
+                }
+                jobs.add(job)
+            }
+            jobs.joinAll()
+            log("mutex.withLock{result++} 原子读写后结果：$result")
+        }
+    }
+
+
+    /**
+     * （7）withTimeout：到点自动 cancel。withTimeoutOrNull 超时返回 null（业务友好）。
      */
     private fun timeoutDemo() {
         lifecycleScope.launch {
