@@ -138,6 +138,11 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/cor_btn_flow"
+                style="@style/CorThreadBtnRow"
+                android:text="数据流：Flow" />
+
 
         </LinearLayout>
     </ScrollView>

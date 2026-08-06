@@ -1,7 +1,6 @@
 package com.sunspot.collect.fragl
 
 import android.annotation.SuppressLint
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,13 +16,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.ArrayDeque
 
@@ -59,7 +59,33 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         binding.corBtnWithTimeout.setOnClickListener { timeoutDemo() }//7
         binding.corBtnMutex.setOnClickListener { mutexDemo() }//8
         binding.corBtnChannel.setOnClickListener { channelDemo() }//9
+        binding.corBtnFlow.setOnClickListener { flowDemo() }//10
 
+    }
+
+    /**
+     * （10）Flow 是冷数据流：flow{} 定义、collect 才启动、emit 发值、中间用操作符（map/filter）转换。冷 = 没人 collect 就不产数据，每次 collect 从头跑一遍。
+     * 冷流 这不就类似是RxJava么？
+     */
+    private fun flowDemo() {
+        lifecycleScope.launch {
+            val flow = flow {
+                for (i in 1 until 5) {
+                    log("发射 emit: $i")
+                    emit(i)//往下游发送值
+                    delay(300)
+                }
+            }
+            log("flow 已定义，但还没运行(冷流特性)")//故意等2s，表示冷流虽然emit了，但没有collect就没有启动
+            delay(2000)
+            log("flow 开始collect")
+            flow.onEach { log("原始值：$it") }
+                .map { it * 10 }// 操作符：每个值乘 10
+                .collect {// 终点：这一步才真正启动流
+                    log("收到: $it")
+                }
+            log("收集结束")
+        }
     }
 
     /**
