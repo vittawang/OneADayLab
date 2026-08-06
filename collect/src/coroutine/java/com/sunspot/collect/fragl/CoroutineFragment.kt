@@ -64,6 +64,63 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
     }
 
     /**
+     * 一、协程异常的传播规律（结构化并发下）
+     * 父协程
+     *  ├── 子A ✅ 正常
+     *  └── 子B 💥 抛异常  ──▶ 向上传给父 ──▶ 父取消 ──▶ 兄弟A也被取消
+     *
+     *  二、SupervisorJob / supervisorScope：异常隔离
+     *  想让子协程互不牵连，用 supervisorScope（或 SupervisorJob）：
+     *  父(Supervisor)
+     *  ├── 子A ✅ 正常完成（不受 B 影响）
+     *  └── 子B 💥 抛异常（只有自己挂，不连累别人）
+     *
+     *  三、try/catch 在协程里能抓什么、不能抓什么（关键坑）
+     * 能抓：包住挂起函数调用
+     *
+     * kotlin
+     *
+     * lifecycleScope.launch {
+     *     try {
+     *         val user = requestUser()   // 挂起调用，正常 try/catch 能抓
+     *     } catch (e: Exception) {
+     *         log("请求失败：$e")
+     *     }
+     * }
+     * 不能抓：try 包住一个 launch
+     *
+     * kotlin
+     *
+     * lifecycleScope.launch {
+     *     try {
+     *         launch {                    // ❌ 子协程并发跑，异常不会被这个 try 抓到
+     *             throw RuntimeException("崩")
+     *         }
+     *     } catch (e: Exception) {
+     *         log("抓不到！")             // 走不到这
+     *     }
+     * }
+     * 因为 launch 点火即走，子协程的异常走的是"传播给父"那条路，不是顺着 try 的调用栈。记住：try/catch 只能抓"当前这条执行线"上的挂起调用，抓不了另起的 launch。
+     *
+     * 五、async 的异常在 await 时才抛
+     * kotlin
+     *
+     * val deferred = async { throw RuntimeException("算错了") }  // 这里不抛
+     * try {
+     *     deferred.await()   // ← 异常在这里抛出来
+     * } catch (e: Exception) {
+     *     log("await 时捕获：$e")
+     * }
+     * 所以 async 的错误要在 await() 处 try/catch。
+     *
+     * 六、生命周期 scope —— 这就是"scope 回收"的真相
+     * 你一直用的 lifecycleScope，它的回收是自动的：
+     *
+     * lifecycleScope：绑定 UI 生命周期，页面销毁（onDestroy/视图销毁）时自动取消里面所有协程
+     * viewModelScope：绑定 ViewModel，ViewModel 被清除（onCleared）时自动取消
+     */
+
+    /**
      * （10）Flow 是冷数据流：flow{} 定义、collect 才启动、emit 发值、中间用操作符（map/filter）转换。冷 = 没人 collect 就不产数据，每次 collect 从头跑一遍。
      * 冷流 这不就类似是RxJava么？
      */
