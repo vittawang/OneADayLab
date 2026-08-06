@@ -15,6 +15,7 @@ import com.sunspot.collect.databinding.CoroutineFragmentCorBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.joinAll
@@ -57,11 +58,40 @@ internal class CoroutineFragment : BaseFragment<CoroutineFragmentCorBinding>() {
         binding.corBtnCancelDo.setOnClickListener { cancelJob6() }//6
         binding.corBtnWithTimeout.setOnClickListener { timeoutDemo() }//7
         binding.corBtnMutex.setOnClickListener { mutexDemo() }//8
+        binding.corBtnChannel.setOnClickListener { channelDemo() }//9
 
     }
 
     /**
-     * （8）锁
+     * （9）Channel：一根协程安全的管道：一头 send 塞数据，另一头 receive 取数据。全是挂起，不是阻塞，类似协程版的BlockingQueue。
+     * 生产者 send，消费者 for-in 取，close 收尾。
+     *
+     * 业务场景：一个生产者协程产出 1~5，一个消费者协程逐个处理。生产快（300ms）、消费慢（500ms），观察管道怎么自动"背压"协调节奏。
+     *
+     */
+    private fun channelDemo() {
+        val channel = Channel<Int>(3)//因为默认容量 0，send 必须等消费者接走才放行，这就是背压（生产者不会把消费者淹没）
+        //背压改成3 代表channel里可以攒3个数据，超过3个，再生产就会挂起等待消费者消费掉1个再生产。
+        lifecycleScope.launch(Dispatchers.Default) {
+            for (i in 1..5) {
+                log("生产者产出：$i")
+                channel.send(i)
+                delay(300)
+            }
+            channel.close()//生产完毕，关闭管道；如果生产者不 close，消费者的 for 循环会永远挂起等下一个，卡死。
+        }
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            for (i in channel) {//for (x in channel) 消费到 close 为止；忘了 close 消费者会卡死
+                log("消费者消费：$i")
+                delay(500)
+            }
+            log("把channel里内容都消费完毕了，已关闭，结束")
+        }
+    }
+
+    /**
+     * （8）Mutex：协程版互斥锁。多协程在 Default（多线程）并发自增，无锁会丢更新，withLock 保证原子。
      * 业务场景：100 个协程并发，每个给计数器 +1 共 1000 次，期望总数 100000。
      */
     private fun mutexDemo() {

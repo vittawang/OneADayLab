@@ -130,6 +130,12 @@
                     android:id="@+id/cor_btn_mutex"
                     style="@style/CorThreadBtn"
                     android:text="互斥锁：Mutex" />
+
+                <Button
+                    android:id="@+id/cor_btn_channel"
+                    style="@style/CorThreadBtn"
+                    android:text="生产消费：Channel" />
+
             </LinearLayout>
 
 
